@@ -13,6 +13,8 @@ module.exports = async function tuneLanguages(Hydro) {
   parsed.java.compile_time_limit = 120000;
   parsed['py.pypy3'].compile_time_limit = 60000;
   parsed.c.compile = parsed.c.compile.replace('/usr/bin/gcc', '/usr/bin/gcc -DQA_FROM_OJ=42');
-  await system.set('hydrooj.langs', yaml.dump(parsed));
+  const configured = yaml.dump(parsed);
+  fs.writeFileSync('/qa/test-langs.yaml', configured);
+  await system.set('hydrooj.langs', configured);
   return 'Set test-only compile limits (C/C++/PyPy 60s, Java 120s) and the C compiler flag';
 };

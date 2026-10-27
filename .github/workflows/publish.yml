@@ -102,6 +102,7 @@ jobs:
             .local-test/qa/language-filter.json
             .local-test/qa/pretest.json
             .local-test/qa/environment.json
+            .local-test/qa/site-languages.json
             .local-test/qa/diagnostics.log
             .local-test/qa/client-policy.log
             .local-test/qa/sandbox-*.log

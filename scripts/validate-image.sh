@@ -55,6 +55,11 @@ docker run --rm --platform linux/amd64 \
   hydrojudge:validation node /tests/client-output-policy.cjs | tee .local-test/qa/client-policy.log
 python3 -B tests/integration/run.py prepare --profile defaults
 "${compose[@]}" up -d --build --wait --wait-timeout 180 mongo site
+python3 -B tests/integration/configure-site.py
+docker run --rm --platform linux/amd64 --network "$network" \
+  -v "$project_dir/.local-test/qa:/qa:ro" \
+  -v "$project_dir/tests/integration:/tests:ro" \
+  hydrojudge:validation node /tests/site-language-config.cjs | tee .local-test/qa/site-languages.json
 "${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 judge
 
 for probe in sandbox-probe sandbox-languages sandbox-output sandbox-fileio-memory sandbox-process-limit; do
