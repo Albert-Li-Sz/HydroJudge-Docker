@@ -58,8 +58,8 @@ python3 -B tests/integration/run.py prepare --profile defaults
 docker exec hydrojudge-validation-site hydrooj cli execute \
   "return await require('/tests/tune-langs.cjs')(global.Hydro)" | tail -1
 "${compose[@]}" restart site
-"${compose[@]}" up -d --no-build --wait --wait-timeout 180 site
-"${compose[@]}" up -d --no-build --wait --wait-timeout 180 judge
+"${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 site
+"${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 judge
 
 for probe in sandbox-probe sandbox-languages sandbox-output sandbox-fileio-memory sandbox-process-limit; do
   "${compose[@]}" exec -T judge node - < "tests/integration/$probe.cjs" | tee ".local-test/qa/$probe.log"
@@ -67,7 +67,7 @@ done
 python3 -B tests/integration/default-limits.py
 python3 -B tests/integration/run.py prepare --profile resource
 "${compose[@]}" restart judge
-"${compose[@]}" up -d --no-build --wait --wait-timeout 180 judge
+"${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 judge
 python3 -B tests/integration/run.py run --fail-fast
 python3 -B tests/integration/language-filter.py
 python3 -B tests/integration/concurrency.py

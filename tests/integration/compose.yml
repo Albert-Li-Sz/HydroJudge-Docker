@@ -16,6 +16,7 @@ services:
     volumes:
       - ../../.local-test/qa:/qa
       - ./:/tests:ro
+      - test-site-data:/data
     ports:
       - 127.0.0.1:${HYDRO_TEST_PORT:-18888}:8888
     healthcheck:
@@ -41,6 +42,7 @@ services:
       - test-cache:/var/cache/hydrojudge
 volumes:
   test-cache:
+  test-site-data:
 networks:
   default:
     name: hydrojudge-validation-net
