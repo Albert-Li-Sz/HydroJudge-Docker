@@ -11,15 +11,17 @@ JUDGE_IMAGE=hydrojudge:validation ./scripts/build.sh
 docker run --rm --platform linux/amd64 -v "$PWD/tests/integration:/tests:ro" hydrojudge:validation node /tests/client-output-policy.cjs
 docker network inspect hydrojudge-validation-net >/dev/null 2>&1 || docker network create hydrojudge-validation-net
 python3 tests/integration/run.py prepare --profile defaults
-docker compose -p hydrojudge-validation -f tests/integration/compose.yml up -d --build mongo site
+docker compose -p hydrojudge-validation -f tests/integration/compose.yml up -d --build --wait --wait-timeout 180 mongo site
 ```
 
-等待 `site` 健康后，修改**临时主站**的编译配置，再重启主站。这会将 C/C++、PyPy 编译时限设为 60 秒、Java 设为 120 秒，以适应模拟环境，并给 C 编译命令加入测试宏，供语言下发测试使用：
+测试初始化会将 C/C++、PyPy 编译时限设为 60 秒、Java 设为 120 秒，以适应模拟环境，并给 C 编译命令加入测试宏。`site` 健康后，通过正式系统设置接口应用这些配置，再检查真实评测 WebSocket 下发的参数。配置脚本会使用临时管理员账号完成 sudo 验证；仅在另一个 CLI 进程写数据库可能留下尚未刷新的主站语言缓存。
 
 ```bash
-docker exec hydrojudge-validation-site hydrooj cli execute "return await require('/tests/tune-langs.cjs')(global.Hydro)"
-docker compose -p hydrojudge-validation -f tests/integration/compose.yml restart site
-docker compose -p hydrojudge-validation -f tests/integration/compose.yml up -d --no-build judge
+python3 tests/integration/configure-site.py
+docker run --rm --platform linux/amd64 --network hydrojudge-validation-net \
+  -v "$PWD/.local-test/qa:/qa:ro" -v "$PWD/tests/integration:/tests:ro" \
+  hydrojudge:validation node /tests/site-language-config.cjs
+docker compose -p hydrojudge-validation -f tests/integration/compose.yml up -d --no-build --no-recreate --wait --wait-timeout 180 judge
 ```
 
 启动后执行：
@@ -46,7 +48,7 @@ python3 tests/integration/pretest.py
 
 主站结果记录在 `.local-test/qa/results.json`。其中包含本次测试程序的评测细节，不包含账号密码。首次运行前可用 `python3 tests/integration/run.py run --only 'C AC' --fail-fast` 快速检查连接。
 
-客户端策略测试使用真实安装的 HydroJudge 模块与模拟沙箱响应，验证缺省 `stdio_size: 256m`、`rerun: 2`、官方文件采集请求，以及 OLE 映射和优先策略。完整端到端套件显式使用 `stdio_size: 16m` 缩小资源用例，`rerun: 2`；沙箱的单文件限额仍为官方缺省 256 MiB。低内存的大标准输出预期为 MLE；20 MiB 文件输出应通过，用于验证标准流限额没有降低单文件限额。
+客户端策略测试使用真实安装的 HydroJudge 模块与模拟沙箱响应，验证缺省 `stdio_size: 256m`、`rerun: 2`、官方文件采集请求，以及 OLE 映射和优先策略。完整端到端套件显式使用 `stdio_size: 16m` 缩小资源用例，`rerun: 2`；沙箱的单文件限额仍为官方缺省 256 MiB。低内存下有限的 12 MiB 标准输出严格要求 MLE；无限高速输出可能同时触及输出限制，允许按现有优先策略返回 OLE，同时仍要求内存计量达到 8 MiB。20 MiB 文件输出应通过，用于验证标准流限额没有降低单文件限额。
 
 Java 21 用例验证版本、Java 21 API、虚拟线程、AC/WA/CE/RE/TLE、文件 IO 和交互题；PyPy 3 用例验证解释器类型、JIT、AC/WA/CE/RE/TLE、文件 IO 和交互题。并发用例混合提交 Java、PyPy、CPython 任务；语言过滤测试使用未安装的 Go，确认任务不会被本评测机领取。
 
