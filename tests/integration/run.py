@@ -221,7 +221,9 @@ Scanner s=new Scanner(new File("sum.in"));try(PrintWriter w=new PrintWriter("sum
         ('Memory below limit', 'resource', 'c', '#include <stdlib.h>\n#include <stdio.h>\nint main(void){volatile char*p=(char*)malloc(24UL*1024*1024);if(!p)return 42;for(unsigned long i=0;i<24UL*1024*1024;i+=4096)p[i]=1;puts("0");}', 'AC', 100),
         ('Output below limit with low memory', 'smallmem', 'c', '#include <stdio.h>\nint main(void){char b[4096];for(int i=0;i<4096;i++)b[i]=65;for(int i=0;i<3072;i++)fwrite(b,1,sizeof b,stdout);return 0;}', 'MLE', 0),
         ('Correct large output with low memory', 'largeoutput', 'c', '#include <stdio.h>\nint main(void){char b[4096];for(int i=0;i<4096;i++)b[i]=65;b[4095]=10;for(int i=0;i<3072;i++)fwrite(b,1,sizeof b,stdout);return 0;}', 'MLE', 0),
-        ('Continuous output with low memory', 'smallmem', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};for(;;)fwrite(b,1,sizeof b,stdout);}', 'MLE', 0),
+        # An unbounded fast writer can overflow the collector while cgroup OOM
+        # is stopping it. Preserve OLE priority when both limits are reported.
+        ('Continuous output with low memory', 'smallmem', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};for(;;)fwrite(b,1,sizeof b,stdout);}', ('MLE', 'OLE'), 0),
         ('Output limit', 'outputlimit', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};for(int i=0;i<5120;i++)fwrite(b,1,sizeof b,stdout);return 0;}', 'OLE', 0),
         ('Stderr output limit', 'outputlimit', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};for(int i=0;i<5120;i++)fwrite(b,1,sizeof b,stderr);return 0;}', 'OLE', 0),
         ('Continuous output limit', 'outputlimit', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};for(;;)fwrite(b,1,sizeof b,stdout);}', 'OLE', 0),
@@ -268,12 +270,15 @@ def run(base, only=None, fail_fast=False):
                          'timeMs': record.get('time'), 'memoryKiB': record.get('memory'), 'judger': record.get('judger'),
                          'testCases': record.get('testCases'), 'judgeTexts': record.get('judgeTexts'),
                          'compilerTexts': record.get('compilerTexts')})
-            item['passed'] = (record['status'] == STATUS[expected] and record.get('score') == score and record.get('judger') == 3)
+            expected_statuses = (expected,) if isinstance(expected, str) else expected
+            item['passed'] = (record['status'] in [STATUS[value] for value in expected_statuses]
+                              and record.get('score') == score and record.get('judger') == 3)
             if name == '64 MiB recursive stack':
                 item['passed'] = item['passed'] and (record.get('memory') or 0) >= 50000
             if name == 'Memory below limit':
                 item['passed'] = item['passed'] and 23000 <= (record.get('memory') or 0) < 65536
-            if name in ('Output below limit with low memory', 'Correct large output with low memory'):
+            if name in ('Output below limit with low memory', 'Correct large output with low memory',
+                        'Continuous output with low memory'):
                 item['passed'] = item['passed'] and (record.get('memory') or 0) >= 8192
         except Exception as error:
             item.update({'passed': False, 'error': str(error)})

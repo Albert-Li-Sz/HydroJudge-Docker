@@ -64,7 +64,7 @@ python3 -B tests/integration/default-limits.py
 python3 -B tests/integration/run.py prepare --profile resource
 "${compose[@]}" restart judge
 "${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 judge
-python3 -B tests/integration/run.py run --fail-fast
+python3 -B tests/integration/run.py run
 python3 -B tests/integration/language-filter.py
 python3 -B tests/integration/concurrency.py
 python3 -B tests/integration/pretest.py
