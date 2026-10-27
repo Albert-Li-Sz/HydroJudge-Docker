@@ -36,8 +36,8 @@ fi
 
 sandbox_pid=''
 judge_pid=''
-# Invoked indirectly by the EXIT trap; no direct call is needed.
-# shellcheck disable=SC2329
+# Invoked indirectly by the EXIT trap; older ShellCheck versions miss the call.
+# shellcheck disable=SC2317,SC2329
 cleanup() {
   trap - EXIT TERM INT
   local pid attempt
