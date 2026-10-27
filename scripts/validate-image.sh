@@ -55,10 +55,6 @@ docker run --rm --platform linux/amd64 \
   hydrojudge:validation node /tests/client-output-policy.cjs | tee .local-test/qa/client-policy.log
 python3 -B tests/integration/run.py prepare --profile defaults
 "${compose[@]}" up -d --build --wait --wait-timeout 180 mongo site
-docker exec hydrojudge-validation-site hydrooj cli execute \
-  "return await require('/tests/tune-langs.cjs')(global.Hydro)" | tail -1
-"${compose[@]}" restart site
-"${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 site
 "${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 judge
 
 for probe in sandbox-probe sandbox-languages sandbox-output sandbox-fileio-memory sandbox-process-limit; do

@@ -21,6 +21,8 @@ module.exports = async function seed(Hydro) {
     }
     manifest[fixture.key] = pid;
   }
+  // Configure the fresh site before its first server process parses languages.
+  await require('./tune-langs.cjs')(Hydro);
   fs.writeFileSync('/qa/manifest.json', JSON.stringify(manifest, null, 2));
   return { seededProblems: Object.keys(manifest).length };
 };
