@@ -9,8 +9,10 @@ ENV NIX_CONFIG="sandbox = false"
 WORKDIR /build
 COPY nix/ ./nix/
 RUN test "${TARGETARCH}" = amd64 || { echo 'Only linux/amd64 is supported' >&2; exit 1; }
+# QEMU user-mode builds cannot install Nix's builder seccomp filter. This only
+# affects the build stage; the runtime go-judge seccomp policy stays enabled.
 RUN set -eu; \
-    rootfs="$(nix-build ./nix/default.nix --no-out-link)"; \
+    rootfs="$(nix-build ./nix/default.nix --no-out-link --option filter-syscalls false)"; \
     mkdir -p /closure /out; \
     nix-store --query --requisites "$rootfs" > /out/closure-paths; \
     while IFS= read -r store_path; do cp -a "$store_path" /closure/; done < /out/closure-paths; \
@@ -30,12 +32,14 @@ FROM ${NODE_IMAGE} AS dependencies
 ARG TARGETARCH
 WORKDIR /opt/hydrojudge
 COPY package.json package-lock.json ./
+COPY patches/ ./patches/
 RUN test "${TARGETARCH}" = amd64 || { echo 'Only linux/amd64 is supported' >&2; exit 1; }
-RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund \
+    && node patches/hydrojudge-output-limit.cjs
 
 FROM ${NODE_IMAGE} AS runtime
 LABEL org.opencontainers.image.title="Hydro independent judge" \
-      org.opencontainers.image.description="Hydro judge with a Nix C/C++ and Python toolchain for linux/amd64"
+      org.opencontainers.image.description="Hydro judge with Nix C/C++, Java 21, CPython and PyPy toolchains for linux/amd64"
 ENV USER=root \
     LANG=C.UTF-8 \
     NODE_ENV=production \

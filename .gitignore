@@ -3,3 +3,5 @@ config/judge.yaml
 node_modules/
 npm-debug.log*
 .DS_Store
+.local-test/
+__pycache__/

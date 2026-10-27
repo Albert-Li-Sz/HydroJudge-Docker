@@ -1,0 +1,47 @@
+services:
+  mongo:
+    image: mongo:7-jammy@sha256:94aea1479556ad4e5aba7a31a6d53eb7b0ae76741950da45a13d5df5cddf1b3b
+    healthcheck:
+      test: [CMD, mongosh, --quiet, --eval, "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  site:
+    container_name: hydrojudge-validation-site
+    build: ./hydro
+    image: hydrojudge-test-site:5.0.7
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ../../.local-test/qa:/qa
+      - ./:/tests:ro
+    ports:
+      - 127.0.0.1:${HYDRO_TEST_PORT:-18888}:8888
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8888/status').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+  judge:
+    image: hydrojudge:validation
+    platform: linux/amd64
+    privileged: true
+    shm_size: 1gb
+    ulimits:
+      stack:
+        soft: -1
+        hard: -1
+    depends_on:
+      site:
+        condition: service_healthy
+    volumes:
+      - ../../.local-test/qa/judge.yaml:/config/judge.yaml:ro
+      - ../../config/mount.yaml:/config/mount.yaml:ro
+      - test-cache:/var/cache/hydrojudge
+volumes:
+  test-cache:
+networks:
+  default:
+    name: hydrojudge-validation-net
+    external: true

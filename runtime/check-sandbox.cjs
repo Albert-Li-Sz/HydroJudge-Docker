@@ -13,6 +13,9 @@ async function checkSandbox() {
     throw new Error('Sandbox version or required symlink protection is missing');
   }
   const runner = config.runnerConfig;
+  if (runner?.seccomp !== true) {
+    throw new Error('Sandbox seccomp is disabled');
+  }
   if (![1, 2].includes(runner?.cgroupType)) {
     throw new Error('Sandbox cgroup unavailable; check privileged mode and the host cgroup configuration');
   }

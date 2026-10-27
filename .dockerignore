@@ -7,5 +7,7 @@
 !nix/**
 !runtime/
 !runtime/**
+!patches/
+!patches/**
 !config/
 !config/mount.yaml

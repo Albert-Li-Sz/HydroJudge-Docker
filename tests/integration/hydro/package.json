@@ -1,0 +1,9 @@
+{
+  "name": "hydrojudge-local-test-site",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "hydrooj": "5.0.7",
+    "@hydrooj/ui-default": "4.58.5"
+  }
+}

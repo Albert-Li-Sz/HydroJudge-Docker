@@ -1,0 +1,1955 @@
+{
+  "environment": {
+    "host": "Apple Silicon / Docker Desktop",
+    "guest": {
+      "arch": "x86_64",
+      "kernel": "6.1.0-54-cloud-amd64",
+      "docker": "20.10.24+dfsg1",
+      "imageConfigId": "sha256:e713e0fdd6eef3aad28dac87a2b429b07a6e698b52e78b6653ebd4004b7fa130"
+    },
+    "imageIndexId": "sha256:9d1e7f058d18c390e02be9e74661916f58bf4c2a8f70e129cac9ac0c500cbd4e",
+    "imageSizeBytes": 2544668323,
+    "Hydro": "5.0.7",
+    "HydroJudge": "4.0.6",
+    "goJudge": "1.13.3",
+    "execution": "QEMU full-system x86_64 emulation; not native performance calibration"
+  },
+  "versions": {
+    "gcc": "15.3.0",
+    "g++": "15.3.0",
+    "CPython": "3.13.15",
+    "OpenJDK": "21.0.12.1",
+    "PyPy": "7.3.20",
+    "PyPyPython": "3.11.13",
+    "PyPyJIT": true
+  },
+  "versionOutput": "gcc (GCC) 15.3.0\ng++ (GCC) 15.3.0\nPython 3.13.15\nPython 3.11.13 (413c9b7f57f5, Sep 29 2026, 18:49:58)\n[PyPy 7.3.20 with GCC 15.3.0]\nopenjdk version \"21.0.12.1\" 2026-08-18\nOpenJDK Runtime Environment (build 21.0.12.1+1-nixos)\nOpenJDK 64-Bit Server VM (build 21.0.12.1+1-nixos, mixed mode, sharing)\njavac 21.0.12.1\njar 21.0.12.1\n",
+  "summary": {
+    "endToEndPassed": 56,
+    "endToEndTotal": 56,
+    "resourcePassed": 53,
+    "resourceTotal": 53,
+    "defaultPassed": 3,
+    "defaultTotal": 3,
+    "newLanguagePassed": 15,
+    "newLanguageTotal": 15,
+    "clientPolicyPassed": 9,
+    "clientPolicyTotal": 9
+  },
+  "profiles": {
+    "defaults": {
+      "stdio_size": "256m",
+      "rerun": 2,
+      "languages": [
+        "_",
+        "c",
+        "cc",
+        "cc.cc17",
+        "java",
+        "py.py3",
+        "py.pypy3"
+      ],
+      "sandboxArgs": [
+        "go-judge",
+        "-mount-conf",
+        "/config/mount.yaml",
+        "-http-addr",
+        "127.0.0.1:5050",
+        "-parallelism",
+        "2",
+        "-no-fallback"
+      ]
+    },
+    "resource": {
+      "stdio_size": "16m",
+      "rerun": 2,
+      "concurrency": 2,
+      "compileTimeLimitsMs": {
+        "c": 60000,
+        "cc": 60000,
+        "java": 120000,
+        "py.pypy3": 60000
+      }
+    }
+  },
+  "sandbox": {
+    "version": "v1.13.3",
+    "seccomp": true,
+    "cgroup": 2,
+    "controllers": [
+      "cpu",
+      "cpuset",
+      "memory",
+      "pids"
+    ],
+    "stackLimit": "unlimited",
+    "fileSizeLimitBytes": 268435456
+  },
+  "sandboxLanguages": [
+    "C: compiled and ran successfully",
+    "C++: compiled and ran successfully",
+    "Python: executed successfully",
+    "PyPy3: executed successfully",
+    "Java21: compiled, packaged and ran successfully"
+  ],
+  "defaultCases": [
+    {
+      "name": "Default profile C AC",
+      "rid": "6ae06f8b8082df05fd5f65d6",
+      "status": 1,
+      "score": 100,
+      "memoryKiB": 516,
+      "passed": true
+    },
+    {
+      "name": "20 MiB stdout below default limit",
+      "rid": "6ae06f928082df05fd5f65e5",
+      "status": 2,
+      "score": 0,
+      "memoryKiB": 20860,
+      "passed": true
+    },
+    {
+      "name": "20 MiB stderr below default limit",
+      "rid": "6ae06f9c8082df05fd5f65f0",
+      "status": 1,
+      "score": 100,
+      "memoryKiB": 20764,
+      "passed": true
+    }
+  ],
+  "resourceCases": [
+    {
+      "name": "C AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae0703d8082df05fd5f6605",
+      "status": 1,
+      "score": 100,
+      "timeMs": 64.562,
+      "memoryKiB": 416,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 25.562,
+          "memory": 412,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 20.641,
+          "memory": 416,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 18.359,
+          "memory": 408,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.07
+    },
+    {
+      "name": "Site language compiler flag",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070418082df05fd5f6614",
+      "status": 1,
+      "score": 100,
+      "timeMs": 50.405,
+      "memoryKiB": 516,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 16.745,
+          "memory": 440,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 17.04,
+          "memory": 288,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 16.62,
+          "memory": 516,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.07
+    },
+    {
+      "name": "C++17 AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070448082df05fd5f6623",
+      "status": 1,
+      "score": 100,
+      "timeMs": 86.471,
+      "memoryKiB": 756,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 31.757,
+          "memory": 532,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 29.759,
+          "memory": 516,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 24.955,
+          "memory": 756,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 14.25
+    },
+    {
+      "name": "Python3 AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070528082df05fd5f6632",
+      "status": 1,
+      "score": 100,
+      "timeMs": 786.444999,
+      "memoryKiB": 3972,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 272.429,
+          "memory": 3928,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 275.097,
+          "memory": 3972,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 238.919,
+          "memory": 3860,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.05
+    },
+    {
+      "name": "Java21 AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070558082df05fd5f6641",
+      "status": 1,
+      "score": 100,
+      "timeMs": 3841.375999,
+      "memoryKiB": 22512,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1293.937,
+          "memory": 22512,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1486.883,
+          "memory": 22356,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1060.556,
+          "memory": 22448,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 10.14
+    },
+    {
+      "name": "Java21 APIs and virtual thread",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae0705f8082df05fd5f6650",
+      "status": 1,
+      "score": 100,
+      "timeMs": 4126.624,
+      "memoryKiB": 23408,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1358.912,
+          "memory": 23360,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1475.017,
+          "memory": 23408,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1292.695,
+          "memory": 23140,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 11.14
+    },
+    {
+      "name": "Java21 WA",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae0706b8082df05fd5f665f",
+      "status": 2,
+      "score": 0,
+      "timeMs": 1631.376,
+      "memoryKiB": 21652,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 783.542,
+          "memory": 21484,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "0",
+              "3"
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "status": 9,
+          "subtaskId": 1,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 847.834,
+          "memory": 21652,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "0",
+              "5"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 8.11
+    },
+    {
+      "name": "Java21 CE",
+      "expectedStatus": "CE",
+      "expectedScore": 0,
+      "rid": "6ae070738082df05fd5f666c",
+      "status": 7,
+      "score": 0,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [],
+      "judgeTexts": [],
+      "compilerTexts": [
+        "./Main.java:1: error: illegal start of type\npublic class Main {public static void main( { invalid }\n                                            ^\n./Main.java:1: error: not a statement\npublic class Main {public static void main( { invalid }\n                                              ^\n./Main.java:1: error: ';' expected\npublic class Main {public static void main( { invalid }\n                                                     ^\n./Main.java:1: error: reached end of file while parsing\npublic class Main {public static void main( { invalid }\n                                                       ^\n4 errors\n"
+      ],
+      "passed": true,
+      "elapsedSeconds": 4.06
+    },
+    {
+      "name": "Java21 RE",
+      "expectedStatus": "RE",
+      "expectedScore": 0,
+      "rid": "6ae070778082df05fd5f6675",
+      "status": 6,
+      "score": 0,
+      "timeMs": 1984.693,
+      "memoryKiB": 21712,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 6,
+          "score": 0,
+          "time": 906.783,
+          "memory": 21332,
+          "message": {
+            "message": "Your program returned {0}.",
+            "params": [
+              "1"
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "status": 9,
+          "subtaskId": 1,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 6,
+          "score": 0,
+          "time": 1077.91,
+          "memory": 21712,
+          "message": {
+            "message": "Your program returned {0}.",
+            "params": [
+              "1"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 8.11
+    },
+    {
+      "name": "Java21 TLE",
+      "expectedStatus": "TLE",
+      "expectedScore": 0,
+      "rid": "6ae0707f8082df05fd5f6682",
+      "status": 3,
+      "score": 0,
+      "timeMs": 1099.481,
+      "memoryKiB": 21484,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 3,
+          "score": 0,
+          "time": 1099.481,
+          "memory": 21484,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 9.13
+    },
+    {
+      "name": "Java21 file IO",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070888082df05fd5f668e",
+      "status": 1,
+      "score": 100,
+      "timeMs": 1187.8,
+      "memoryKiB": 22560,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1187.8,
+          "memory": 22560,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 8.12
+    },
+    {
+      "name": "Java21 interactive AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070908082df05fd5f669c",
+      "status": 1,
+      "score": 100,
+      "timeMs": 1074.19,
+      "memoryKiB": 22484,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1074.19,
+          "memory": 22484,
+          "message": "ok correct response\n "
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 20.25
+    },
+    {
+      "name": "PyPy3 AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070a48082df05fd5f66aa",
+      "status": 1,
+      "score": 100,
+      "timeMs": 3919.077999,
+      "memoryKiB": 46692,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1242.644,
+          "memory": 46504,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1351.632,
+          "memory": 46692,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 1324.802,
+          "memory": 46580,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 7.11
+    },
+    {
+      "name": "PyPy3 WA",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae070ac8082df05fd5f66b9",
+      "status": 2,
+      "score": 0,
+      "timeMs": 1633.84,
+      "memoryKiB": 34476,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 802.236,
+          "memory": 34476,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "0",
+              "3"
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "status": 9,
+          "subtaskId": 1,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 831.604,
+          "memory": 34472,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "0",
+              "5"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.08
+    },
+    {
+      "name": "PyPy3 CE",
+      "expectedStatus": "CE",
+      "expectedScore": 0,
+      "rid": "6ae070b08082df05fd5f66c6",
+      "status": 7,
+      "score": 0,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [],
+      "judgeTexts": [],
+      "compilerTexts": [
+        "Traceback (most recent call last):\n  File \"/nix/pypy3.11-7.3.20/lib/pypy3.11/py_compile.py\", line 144, in compile\n    code = loader.source_to_code(source_bytes, dfile or file,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<builtin>/frozen importlib._bootstrap_external\", line 1019, in source_to_code\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"/w/foo.py\", line 1\n    def broken(:\n              ^\nSyntaxError: '(' was never closed\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/nix/pypy3.11-7.3.20/lib/pypy3.11/py_compile.py\", line 150, in compile\n    raise py_exc\npy_compile.PyCompileError:   File \"/w/foo.py\", line 1\n    def broken(:\n              ^\nSyntaxError: '(' was never closed\n\n"
+      ],
+      "passed": true,
+      "elapsedSeconds": 2.04
+    },
+    {
+      "name": "PyPy3 RE",
+      "expectedStatus": "RE",
+      "expectedScore": 0,
+      "rid": "6ae070b28082df05fd5f66cf",
+      "status": 6,
+      "score": 0,
+      "timeMs": 2911.952,
+      "memoryKiB": 50496,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 6,
+          "score": 0,
+          "time": 1454.482,
+          "memory": 50496,
+          "message": {
+            "message": "Your program returned {0}.",
+            "params": [
+              "1"
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "status": 9,
+          "subtaskId": 1,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 6,
+          "score": 0,
+          "time": 1457.47,
+          "memory": 50488,
+          "message": {
+            "message": "Your program returned {0}.",
+            "params": [
+              "1"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.07
+    },
+    {
+      "name": "PyPy3 TLE",
+      "expectedStatus": "TLE",
+      "expectedScore": 0,
+      "rid": "6ae070b68082df05fd5f66dc",
+      "status": 3,
+      "score": 0,
+      "timeMs": 611.971,
+      "memoryKiB": 27396,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 3,
+          "score": 0,
+          "time": 611.971,
+          "memory": 27396,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.07
+    },
+    {
+      "name": "PyPy3 file IO",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070ba8082df05fd5f66e7",
+      "status": 1,
+      "score": 100,
+      "timeMs": 825.908,
+      "memoryKiB": 34452,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 825.908,
+          "memory": 34452,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.05
+    },
+    {
+      "name": "PyPy3 interactive AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070bd8082df05fd5f66f4",
+      "status": 1,
+      "score": 100,
+      "timeMs": 774.662,
+      "memoryKiB": 34308,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 774.662,
+          "memory": 34308,
+          "message": "ok correct response\n "
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.06
+    },
+    {
+      "name": "Wrong answer",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae070c08082df05fd5f6701",
+      "status": 2,
+      "score": 0,
+      "timeMs": 51.572,
+      "memoryKiB": 556,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 26.283,
+          "memory": 528,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "0",
+              "3"
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "status": 9,
+          "subtaskId": 1,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 25.289,
+          "memory": 556,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "0",
+              "5"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 12.13
+    },
+    {
+      "name": "Compile error",
+      "expectedStatus": "CE",
+      "expectedScore": 0,
+      "rid": "6ae070cc8082df05fd5f670e",
+      "status": 7,
+      "score": 0,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [],
+      "judgeTexts": [],
+      "compilerTexts": [
+        "foo.cc:1:5: error: cannot declare ‘::main’ to be a global variable\n    1 | int main( { this is invalid\n      |     ^~~~\nfoo.cc:1:13: error: invalid use of ‘this’ at top level\n    1 | int main( { this is invalid\n      |             ^~~~\nfoo.cc:1:18: error: expected ‘}’ before ‘is’\n    1 | int main( { this is invalid\n      |           ~      ^~\nfoo.cc:1:28: error: expected ‘)’ at end of input\n    1 | int main( { this is invalid\n      |         ~                  ^\n      |                            )\n"
+      ],
+      "passed": true,
+      "elapsedSeconds": 1.03
+    },
+    {
+      "name": "Runtime error",
+      "expectedStatus": "RE",
+      "expectedScore": 0,
+      "rid": "6ae070cd8082df05fd5f6717",
+      "status": 6,
+      "score": 0,
+      "timeMs": 36.345,
+      "memoryKiB": 532,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 6,
+          "score": 0,
+          "time": 36.345,
+          "memory": 532,
+          "message": "Aborted"
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.06
+    },
+    {
+      "name": "Time limit",
+      "expectedStatus": "TLE",
+      "expectedScore": 0,
+      "rid": "6ae070d08082df05fd5f6723",
+      "status": 3,
+      "score": 0,
+      "timeMs": 601.971,
+      "memoryKiB": 532,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 3,
+          "score": 0,
+          "time": 601.971,
+          "memory": 532,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.06
+    },
+    {
+      "name": "CPU below limit",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070d48082df05fd5f672e",
+      "status": 1,
+      "score": 100,
+      "timeMs": 365.25,
+      "memoryKiB": 516,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 365.25,
+          "memory": 516,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.08
+    },
+    {
+      "name": "CPU above limit",
+      "expectedStatus": "TLE",
+      "expectedScore": 0,
+      "rid": "6ae070d78082df05fd5f673b",
+      "status": 3,
+      "score": 0,
+      "timeMs": 600.698,
+      "memoryKiB": 520,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 3,
+          "score": 0,
+          "time": 600.698,
+          "memory": 520,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.08
+    },
+    {
+      "name": "Memory below limit",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070db8082df05fd5f6746",
+      "status": 1,
+      "score": 100,
+      "timeMs": 116.244,
+      "memoryKiB": 24852,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 116.244,
+          "memory": 24852,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.05
+    },
+    {
+      "name": "Output below limit with low memory",
+      "expectedStatus": "MLE",
+      "expectedScore": 0,
+      "rid": "6ae070dd8082df05fd5f6753",
+      "status": 4,
+      "score": 0,
+      "timeMs": 90.993,
+      "memoryKiB": 8208,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 4,
+          "score": 0,
+          "time": 90.993,
+          "memory": 8208,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.03
+    },
+    {
+      "name": "Correct large output with low memory",
+      "expectedStatus": "MLE",
+      "expectedScore": 0,
+      "rid": "6ae070df8082df05fd5f675f",
+      "status": 4,
+      "score": 0,
+      "timeMs": 82.424,
+      "memoryKiB": 8208,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 4,
+          "score": 0,
+          "time": 82.424,
+          "memory": 8208,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.03
+    },
+    {
+      "name": "Continuous output with low memory",
+      "expectedStatus": "MLE",
+      "expectedScore": 0,
+      "rid": "6ae070e18082df05fd5f676b",
+      "status": 4,
+      "score": 0,
+      "timeMs": 77.068,
+      "memoryKiB": 8208,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 4,
+          "score": 0,
+          "time": 77.068,
+          "memory": 8208,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.05
+    },
+    {
+      "name": "Output limit",
+      "expectedStatus": "OLE",
+      "expectedScore": 0,
+      "rid": "6ae070e38082df05fd5f6776",
+      "status": 5,
+      "score": 0,
+      "timeMs": 151.386,
+      "memoryKiB": 20756,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 5,
+          "score": 0,
+          "time": 151.386,
+          "memory": 20756,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.05
+    },
+    {
+      "name": "Stderr output limit",
+      "expectedStatus": "OLE",
+      "expectedScore": 0,
+      "rid": "6ae070e68082df05fd5f6781",
+      "status": 5,
+      "score": 0,
+      "timeMs": 151.434,
+      "memoryKiB": 20808,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 5,
+          "score": 0,
+          "time": 151.434,
+          "memory": 20808,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.04
+    },
+    {
+      "name": "Continuous output limit",
+      "expectedStatus": "OLE",
+      "expectedScore": 0,
+      "rid": "6ae070e88082df05fd5f678c",
+      "status": 5,
+      "score": 0,
+      "timeMs": 1792.944,
+      "memoryKiB": 263040,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 5,
+          "score": 0,
+          "time": 1792.944,
+          "memory": 263040,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.07
+    },
+    {
+      "name": "File output limit",
+      "expectedStatus": "OLE",
+      "expectedScore": 0,
+      "rid": "6ae070ec8082df05fd5f6797",
+      "status": 5,
+      "score": 0,
+      "timeMs": 1699.489,
+      "memoryKiB": 263188,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 5,
+          "score": 0,
+          "time": 1699.489,
+          "memory": 263188,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 4.08
+    },
+    {
+      "name": "File output above stream limit",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070f08082df05fd5f67a3",
+      "status": 1,
+      "score": 100,
+      "timeMs": 139.796,
+      "memoryKiB": 20752,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 139.796,
+          "memory": 20752,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 6.09
+    },
+    {
+      "name": "Memory limit",
+      "expectedStatus": "MLE",
+      "expectedScore": 0,
+      "rid": "6ae070f68082df05fd5f67b1",
+      "status": 4,
+      "score": 0,
+      "timeMs": 244.68,
+      "memoryKiB": 65552,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 4,
+          "score": 0,
+          "time": 244.68,
+          "memory": 65552,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.04
+    },
+    {
+      "name": "C++ address-space limit",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070f88082df05fd5f67bc",
+      "status": 1,
+      "score": 100,
+      "timeMs": 25.077,
+      "memoryKiB": 728,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 25.077,
+          "memory": 728,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.06
+    },
+    {
+      "name": "C++ null access after allocation failure",
+      "expectedStatus": "RE",
+      "expectedScore": 0,
+      "rid": "6ae070fb8082df05fd5f67c9",
+      "status": 6,
+      "score": 0,
+      "timeMs": 24.855,
+      "memoryKiB": 528,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 6,
+          "score": 0,
+          "time": 24.855,
+          "memory": 528,
+          "message": "Segmentation fault"
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.04
+    },
+    {
+      "name": "64 MiB recursive stack",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae070fd8082df05fd5f67d4",
+      "status": 1,
+      "score": 100,
+      "timeMs": 290.155,
+      "memoryKiB": 66304,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 290.155,
+          "memory": 66304,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [
+        "foo.cc: In function ‘long long int f(int)’:\nfoo.cc:3:1: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]\n    3 | for(int i=0;i<16384;i+=4096)frame[i]=1;frame[16383]=2;\n      | ^~~\nfoo.cc:3:40: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’\n    3 | for(int i=0;i<16384;i+=4096)frame[i]=1;frame[16383]=2;\n      |                                        ^~~~~\nfoo.cc:4:1: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n    4 | if(n==0)return 0;long long result=f(n-1);return result+frame[0];}\n      | ^~\nfoo.cc:4:18: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n    4 | if(n==0)return 0;long long result=f(n-1);return result+frame[0];}\n      |                  ^~~~\n"
+      ],
+      "passed": true,
+      "elapsedSeconds": 3.05
+    },
+    {
+      "name": "File IO",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae071008082df05fd5f67e2",
+      "status": 1,
+      "score": 100,
+      "timeMs": 24.865,
+      "memoryKiB": 532,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 24.865,
+          "memory": 532,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 12.17
+    },
+    {
+      "name": "Special checker accepts alternative",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae0710c8082df05fd5f67ef",
+      "status": 1,
+      "score": 100,
+      "timeMs": 30.743,
+      "memoryKiB": 528,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 30.743,
+          "memory": 528,
+          "message": "ok valid root\n "
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 18.23
+    },
+    {
+      "name": "Special checker rejects wrong",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae0711e8082df05fd5f67fd",
+      "status": 2,
+      "score": 0,
+      "timeMs": 24.755,
+      "memoryKiB": 464,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 24.755,
+          "memory": 464,
+          "message": "invalid root\n"
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 11.14
+    },
+    {
+      "name": "Interactive AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae0712a8082df05fd5f6808",
+      "status": 1,
+      "score": 100,
+      "timeMs": 27.337,
+      "memoryKiB": 548,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 27.337,
+          "memory": 548,
+          "message": "ok correct response\n "
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 10.14
+    },
+    {
+      "name": "Interactive WA",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae071348082df05fd5f6815",
+      "status": 2,
+      "score": 0,
+      "timeMs": 27.683,
+      "memoryKiB": 560,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 27.683,
+          "memory": 560,
+          "message": "wrong response\n"
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 10.14
+    },
+    {
+      "name": "Communication AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae0713e8082df05fd5f6820",
+      "status": 1,
+      "score": 100,
+      "timeMs": 36.003,
+      "memoryKiB": 444,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 36.003,
+          "memory": 444,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 3.09
+    },
+    {
+      "name": "Communication WA",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae071418082df05fd5f682e",
+      "status": 2,
+      "score": 0,
+      "timeMs": 52.186,
+      "memoryKiB": 436,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 52.186,
+          "memory": 436,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.05
+    },
+    {
+      "name": "Output only AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae071438082df05fd5f6839",
+      "status": 1,
+      "score": 100,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.06
+    },
+    {
+      "name": "Output only WA",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae071458082df05fd5f6847",
+      "status": 2,
+      "score": 0,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "41",
+              "42"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.05
+    },
+    {
+      "name": "Output archive AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae071478082df05fd5f6851",
+      "status": 1,
+      "score": 100,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 1.04
+    },
+    {
+      "name": "Output archive WA",
+      "expectedStatus": "WA",
+      "expectedScore": 0,
+      "rid": "6ae071488082df05fd5f685f",
+      "status": 2,
+      "score": 0,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 0,
+          "memory": 0,
+          "message": ""
+        },
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 2,
+          "score": 0,
+          "time": 0,
+          "memory": 0,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "6",
+              "5"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 2.04
+    },
+    {
+      "name": "Objective AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae0714a8082df05fd5f686a",
+      "status": 1,
+      "score": 100,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [
+        {
+          "subtaskId": 1,
+          "time": 0,
+          "memory": 0,
+          "status": 1,
+          "score": 50,
+          "message": "Correct",
+          "id": 0
+        },
+        {
+          "subtaskId": 2,
+          "time": 0,
+          "memory": 0,
+          "status": 1,
+          "score": 50,
+          "message": "Correct",
+          "id": 0
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 1.05
+    },
+    {
+      "name": "Objective partial credit",
+      "expectedStatus": "WA",
+      "expectedScore": 75,
+      "rid": "6ae0714b8082df05fd5f6877",
+      "status": 2,
+      "score": 75,
+      "timeMs": 0,
+      "memoryKiB": 0,
+      "judger": 3,
+      "testCases": [
+        {
+          "subtaskId": 1,
+          "time": 0,
+          "memory": 0,
+          "status": 1,
+          "score": 50,
+          "message": "Correct",
+          "id": 0
+        },
+        {
+          "subtaskId": 2,
+          "time": 0,
+          "memory": 0,
+          "status": 2,
+          "score": 25,
+          "message": "Partially Correct",
+          "id": 0
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 1.03
+    },
+    {
+      "name": "Subtask partial credit",
+      "expectedStatus": "WA",
+      "expectedScore": 40,
+      "rid": "6ae0714c8082df05fd5f6881",
+      "status": 2,
+      "score": 40,
+      "timeMs": 50.672,
+      "memoryKiB": 428,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 40,
+          "time": 25.36,
+          "memory": 348,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 2,
+          "status": 2,
+          "score": 0,
+          "time": 25.312,
+          "memory": 428,
+          "message": {
+            "message": "On line {0}: Read {1}, expect {2}.",
+            "params": [
+              1,
+              "3",
+              "30"
+            ]
+          }
+        }
+      ],
+      "judgeTexts": [
+        {
+          "message": "Syncing testdata, please wait...",
+          "params": []
+        }
+      ],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 11.15
+    },
+    {
+      "name": "Cached problem AC",
+      "expectedStatus": "AC",
+      "expectedScore": 100,
+      "rid": "6ae071578082df05fd5f688e",
+      "status": 1,
+      "score": 100,
+      "timeMs": 75.633,
+      "memoryKiB": 536,
+      "judger": 3,
+      "testCases": [
+        {
+          "id": 2,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 25.261,
+          "memory": 328,
+          "message": ""
+        },
+        {
+          "id": 1,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 26.064,
+          "memory": 536,
+          "message": ""
+        },
+        {
+          "id": 3,
+          "subtaskId": 1,
+          "status": 1,
+          "score": 100,
+          "time": 24.308,
+          "memory": 532,
+          "message": ""
+        }
+      ],
+      "judgeTexts": [],
+      "compilerTexts": [],
+      "passed": true,
+      "elapsedSeconds": 10.14
+    }
+  ],
+  "clientPolicyChecks": [
+    "official installer defaults: stdio_size=256m, rerun=2",
+    "accepted; upstream file collectors retained",
+    "sandbox OLE; upstream file collectors retained",
+    "file OLE with copy-out failure; upstream file collectors retained",
+    "OLE priority over TLE; upstream file collectors retained",
+    "OLE priority over MLE; upstream file collectors retained",
+    "MLE without overflow; upstream file collectors retained",
+    "TLE without overflow; upstream file collectors retained",
+    "explicit stdio_size/rerun overrides preserved"
+  ],
+  "concurrency": {
+    "languages": [
+      "java",
+      "py.pypy3",
+      "java",
+      "py.py3"
+    ],
+    "submissions": 4,
+    "accepted": 4,
+    "maxActive": 2
+  },
+  "languageFilter": {
+    "excludedLanguage": "go",
+    "waitingSeconds": 12,
+    "rid": "6ae071828082df05fd5f68a1"
+  },
+  "jarRegression": {
+    "before": {
+      "status": "Nonzero Exit Status",
+      "stderr": "java.io.IOException: Operation not permitted\n\tat java.base/sun.nio.fs.LinuxNativeDispatcher.directCopy0(Native Method)\n\tat java.base/sun.nio.fs.LinuxFileSystem.directCopy(LinuxFileSystem.java:159)\n\tat java.base/sun.nio.fs.UnixFileSystem.copyFile(UnixFileSystem.java:687)\n\tat java.base/sun.nio.fs.UnixFileSystem.move(UnixFileSystem.java:963)\n\tat java.base/sun.nio.fs.UnixFileSystemProvider.move(UnixFileSystemProvider.java:309)\n\tat java.base/java.nio.file.Files.move(Files.java:1431)\n\tat jdk.jartool/sun.tools.jar.Main.validateAndClose(Main.java:473)\n\tat jdk.jartool/sun.tools.jar.Main.run(Main.java:336)\n\tat jdk.jartool/sun.tools.jar.Main.main(Main.java:1702)\n"
+    },
+    "sameFilesystemProbe": {
+      "compile": "Accepted",
+      "run": "Accepted",
+      "stdout": "3\n"
+    },
+    "after": "Unmodified javac/jar sandbox probe and all real Java submissions passed with the packaged jar launcher; seccomp enabled"
+  }
+}

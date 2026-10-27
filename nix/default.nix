@@ -4,6 +4,12 @@ let
     url = "https://github.com/NixOS/nixpkgs/archive/1f607aa79b6356ed45d3cd3c8079c196e79efa2c.tar.gz";
   };
   pkgs = import nixpkgs { system = "x86_64-linux"; };
+  # JDK 21 creates JARs through a temporary file. Keep it on the working
+  # filesystem so the final move does not need a cross-mount fast-copy syscall
+  # rejected by the upstream sandbox filter. Contestant java options are intact.
+  jarLauncher = pkgs.writeShellScriptBin "jar" ''
+    exec ${pkgs.jdk21_headless}/bin/jar "-J-Djava.io.tmpdir=$(pwd -P)" "$@"
+  '';
   identity = pkgs.runCommand "hydrojudge-identity" { } ''
     mkdir -p "$out/etc" "$out/include" "$out/lib" "$out/share"
     touch "$out/include/.keep" "$out/lib/.keep" "$out/share/.keep"
@@ -26,6 +32,9 @@ pkgs.buildEnv {
     gnused
     patch
     python3
+    pypy3
+    jdk21_headless
+    (lib.hiPrio jarLauncher)
     unzip
     zip
     cacert

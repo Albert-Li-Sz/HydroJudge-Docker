@@ -10,16 +10,17 @@ hosts:
     concurrency: 2
     # Only accept languages actually installed in this image.
     # Confirm the keys against your site's language configuration.
-    lang: [c, cc, cc.cc14, cc.cc17, cc.cc20, py.py3]
+    # The '_' key is used for objective and submit-answer tasks.
+    lang: ['_', c, cc, cc.cc98, cc.cc98o2, cc.cc11, cc.cc11o2, cc.cc14, cc.cc14o2, cc.cc17, cc.cc17o2, cc.cc20, cc.cc20o2, java, py.py3, py.pypy3]
 
 parallelism: 2
 singleTaskParallelism: 2
 memoryMax: 1024m
-stdio_size: 64m
+stdio_size: 256m
 processLimit: 128
 testcases_max: 120
 total_time_limit: 600
-rerun: 0
+rerun: 2
 rate: 1
 cache_dir: /var/cache/hydrojudge
 tmp_dir: /tmp/hydrojudge
