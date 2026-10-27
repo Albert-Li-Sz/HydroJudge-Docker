@@ -1,7 +1,11 @@
-# 镜像只需要下列文件。默认排除其余内容，避免把源码、测试、.env、
-# 本地临时目录或未来新增的敏感文件发送到 Docker 构建上下文。
-*
+# Allowlist: actual judge credentials and local files never enter the context.
+**
 !Dockerfile
-!entrypoint.sh
-!judge.template.yaml
-!langs.yaml
+!package.json
+!package-lock.json
+!nix/
+!nix/**
+!runtime/
+!runtime/**
+!config/
+!config/mount.yaml

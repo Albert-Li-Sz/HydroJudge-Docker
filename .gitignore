@@ -1,10 +1,5 @@
 .env
-.autoscale.lock
-.autoscale.pause
-.update.lock
-.hydrojudge-install
+config/judge.yaml
+node_modules/
+npm-debug.log*
 .DS_Store
-__pycache__/
-*.py[cod]
-*.log
-*.zip

@@ -1,76 +1,64 @@
-ARG GOJUDGE_VERSION=v1.12.1
-FROM criyle/go-judge:${GOJUDGE_VERSION} AS gojudge
+# syntax=docker/dockerfile:1.7
 
-FROM ubuntu:24.04
+ARG NODE_IMAGE=node:22-bookworm-slim@sha256:de170b39439eb0e5a3444ad7d60b015614a381e10fecae2e30ec9e735122f38d
+ARG NIX_IMAGE=nixos/nix@sha256:f159a58f390677f41e8e900a74b6e2f9c7f27b364122ae6acf7a652ce6c551c0
 
-ARG DEBIAN_FRONTEND=noninteractive
-ARG HYDROJUDGE_VERSION=4.0.5
-ARG UBUNTU_MIRROR=http://mirrors.tuna.tsinghua.edu.cn/ubuntu
-ARG NPM_REGISTRY=https://registry.npmmirror.com
+FROM ${NIX_IMAGE} AS toolchain
+ARG TARGETARCH
+ENV NIX_CONFIG="sandbox = false"
+WORKDIR /build
+COPY nix/ ./nix/
+RUN test "${TARGETARCH}" = amd64 || { echo 'Only linux/amd64 is supported' >&2; exit 1; }
+RUN set -eu; \
+    rootfs="$(nix-build ./nix/default.nix --no-out-link)"; \
+    mkdir -p /closure /out; \
+    nix-store --query --requisites "$rootfs" > /out/closure-paths; \
+    while IFS= read -r store_path; do cp -a "$store_path" /closure/; done < /out/closure-paths; \
+    printf '%s\n' "$rootfs" > /out/rootfs-path
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ARG GO_JUDGE_VERSION=1.13.3
+ARG GO_JUDGE_SHA256=509782f8959987256d99ac6dc8062ec593d776f291401c8e0c28bdc48dcd1880
+RUN set -eu; \
+    curl --fail --location --retry 3 \
+      "https://github.com/criyle/go-judge/releases/download/v${GO_JUDGE_VERSION}/go-judge_${GO_JUDGE_VERSION}_linux_amd64" \
+      --output /out/go-judge; \
+    printf '%s  %s\n' "$GO_JUDGE_SHA256" /out/go-judge | sha256sum --check --strict; \
+    chmod 0755 /out/go-judge; \
+    printf '%s\n' "$GO_JUDGE_VERSION" > /out/go-judge-version
 
-ENV TZ=Asia/Kuala_Lumpur
-ENV VJ4_LANGS=/opt/langs.yaml
+FROM ${NODE_IMAGE} AS dependencies
+ARG TARGETARCH
+WORKDIR /opt/hydrojudge
+COPY package.json package-lock.json ./
+RUN test "${TARGETARCH}" = amd64 || { echo 'Only linux/amd64 is supported' >&2; exit 1; }
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 
-# 默认使用国内镜像；海外或内网环境可通过 UBUNTU_MIRROR 覆盖。
-RUN test -n "${UBUNTU_MIRROR}" \
-    && sed -i "s|http://archive.ubuntu.com/ubuntu|${UBUNTU_MIRROR%/}|g" /etc/apt/sources.list.d/ubuntu.sources \
-    && sed -i "s|http://security.ubuntu.com/ubuntu|${UBUNTU_MIRROR%/}|g" /etc/apt/sources.list.d/ubuntu.sources
-
-# APT 包随 Ubuntu 24.04 与工具链 PPA 获取安全更新，因此不固定完整 deb 版本；
-# Node 校验脚本中的单引号用于阻止 Shell 展开 JavaScript 模板字符串。
-# hadolint ignore=DL3008,SC2016
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends software-properties-common \
-    && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-        bash \
-        ca-certificates \
-        curl \
-        gettext-base \
-        tini \
-        procps \
-        psmisc \
-        gcc-15 \
-        g++-15 \
-        pypy3 \
-        make \
-        python3 \
-        python3.12 \
-        python3-pip \
-        python-is-python3 \
-        openjdk-21-jdk \
-        git \
-        time \
-    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 100 \
-    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 100 \
-    && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-15 100 \
-    && update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-15 100 \
-    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && npm config set registry "${NPM_REGISTRY}" \
-    && npm install -g "@hydrooj/hydrojudge@${HYDROJUDGE_VERSION}" \
-    && node -e 'if (+process.versions.node.split(".")[0] !== 22) process.exit(1)' \
-    && node -e 'if (require(`${process.argv[1]}/@hydrooj/hydrojudge/package.json`).version !== process.argv[2]) process.exit(1)' "$(npm root -g)" "${HYDROJUDGE_VERSION}" \
-    && gcc-15 -dumpversion | grep -q '^15' \
-    && g++-15 -dumpversion | grep -q '^15' \
-    && python3.12 -c 'import sys; assert sys.version_info[:2] == (3, 12)' \
-    && ! command -v go \
-    && npm cache clean --force \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-
-WORKDIR /opt
-
-COPY --from=gojudge /opt/go-judge /opt/mount.yaml /opt/
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY judge.template.yaml /etc/hydro/judge.template.yaml
-COPY langs.yaml /opt/langs.yaml
-
-RUN chmod +x /usr/local/bin/entrypoint.sh /opt/go-judge \
-    && mkdir -p /root/.hydro /data/cache /data/tmp
-
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/entrypoint.sh"]
+FROM ${NODE_IMAGE} AS runtime
+LABEL org.opencontainers.image.title="Hydro independent judge" \
+      org.opencontainers.image.description="Hydro judge with a Nix C/C++ and Python toolchain for linux/amd64"
+ENV USER=root \
+    LANG=C.UTF-8 \
+    NODE_ENV=production \
+    CONFIG_FILE=/config/judge.yaml \
+    PATH=/opt/hydrojudge/node_modules/.bin:/opt/judge-rootfs/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    SSL_CERT_FILE=/opt/judge-rootfs/etc/ssl/certs/ca-bundle.crt \
+    NODE_EXTRA_CA_CERTS=/opt/judge-rootfs/etc/ssl/certs/ca-bundle.crt
+WORKDIR /opt/hydrojudge
+COPY --from=toolchain /closure/ /nix/store/
+COPY --from=toolchain /out/rootfs-path /out/closure-paths /out/go-judge-version ./build-info/
+COPY --from=toolchain /out/go-judge /usr/local/bin/go-judge
+COPY --from=dependencies /opt/hydrojudge/ ./
+COPY runtime/ ./runtime/
+COPY config/mount.yaml ./mount.yaml
+RUN set -eu; \
+    ln -s "$(cat build-info/rootfs-path)" /opt/judge-rootfs; \
+    ln -s /usr/local/bin/go-judge /usr/local/bin/hydro-sandbox; \
+    chmod 0755 runtime/entrypoint.sh; \
+    mkdir -p /config /var/cache/hydrojudge /tmp/hydrojudge /run/hydrojudge; \
+    chmod 0700 /run/hydrojudge
+USER root
+STOPSIGNAL SIGTERM
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD ["node", "/opt/hydrojudge/runtime/healthcheck.cjs"]
+ENTRYPOINT ["/opt/judge-rootfs/bin/tini", "-g", "--", "/opt/hydrojudge/runtime/entrypoint.sh"]
+CMD ["run"]

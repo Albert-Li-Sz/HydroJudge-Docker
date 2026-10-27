@@ -1,0 +1,80 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const yaml = require('js-yaml');
+
+function positiveInteger(value, label) {
+  if (!Number.isSafeInteger(value) || value < 1) {
+    throw new Error(`${label} must be a positive integer`);
+  }
+}
+
+function main() {
+  const source = process.env.CONFIG_FILE || '/config/judge.yaml';
+  if (!fs.existsSync(source)) {
+    throw new Error(`Missing ${source}; copy config/judge.yaml.example to config/judge.yaml and edit it`);
+  }
+  const config = yaml.load(fs.readFileSync(source, 'utf8'));
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
+    throw new Error('Judge configuration must be a YAML mapping');
+  }
+  if (!config.hosts || typeof config.hosts !== 'object' || Array.isArray(config.hosts)
+      || Object.keys(config.hosts).length === 0) {
+    throw new Error('Configure at least one Hydro site under hosts');
+  }
+  for (const [name, host] of Object.entries(config.hosts)) {
+    if (!host || typeof host !== 'object' || Array.isArray(host)) {
+      throw new Error(`hosts.${name} must be a mapping`);
+    }
+    if (host.type && host.type !== 'hydro') throw new Error(`hosts.${name}.type must be hydro`);
+    host.type = 'hydro';
+    let url;
+    try { url = new URL(host.server_url); } catch { throw new Error(`hosts.${name}.server_url must be an HTTP(S) URL`); }
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password
+        || url.search || url.hash || url.hostname.endsWith('.example.com')) {
+      throw new Error(`hosts.${name}.server_url must be a real HTTP(S) site URL without credentials, query or fragment`);
+    }
+    host.server_url = url.href.endsWith('/') ? url.href : `${url.href}/`;
+    if (typeof host.uname !== 'string' || !host.uname.trim()) {
+      throw new Error(`hosts.${name}.uname is required`);
+    }
+    if (typeof host.password !== 'string' || !host.password
+        || ['REPLACE_AT_RUNTIME', 'examplepassword'].includes(host.password)) {
+      throw new Error(`hosts.${name}.password must contain the actual judge password`);
+    }
+    host.concurrency ??= 2;
+    positiveInteger(host.concurrency, `hosts.${name}.concurrency`);
+    if (host.lang !== undefined && (!Array.isArray(host.lang) || host.lang.length === 0
+        || host.lang.some((lang) => typeof lang !== 'string' || !lang.trim()))) {
+      throw new Error(`hosts.${name}.lang must be a non-empty list of language keys`);
+    }
+  }
+  config.parallelism ??= 2;
+  config.singleTaskParallelism ??= 2;
+  positiveInteger(config.parallelism, 'parallelism');
+  positiveInteger(config.singleTaskParallelism, 'singleTaskParallelism');
+  config.cache_dir ??= '/var/cache/hydrojudge';
+  config.tmp_dir ??= '/tmp/hydrojudge';
+  for (const key of ['cache_dir', 'tmp_dir']) {
+    if (typeof config[key] !== 'string' || !path.isAbsolute(config[key])) {
+      throw new Error(`${key} must be an absolute container path`);
+    }
+    fs.mkdirSync(config[key], { recursive: true });
+  }
+  // This image manages its own local sandbox; never rewrite a URL using path.resolve.
+  config.sandbox_host = 'http://127.0.0.1:5050';
+  config.secret ||= crypto.randomBytes(32).toString('hex');
+  config.env ??= 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nHOME=/w\nLANG=C.UTF-8\n';
+  fs.mkdirSync('/run/hydrojudge', { recursive: true, mode: 0o700 });
+  fs.writeFileSync('/run/hydrojudge/judge.yaml', yaml.dump(config), { mode: 0o600 });
+  fs.writeFileSync('/run/hydrojudge/parallelism', `${config.parallelism}\n`, { mode: 0o600 });
+  console.log(`[entrypoint] Configuration prepared for ${Object.keys(config.hosts).length} site(s)`);
+}
+
+try { main(); } catch (error) {
+  // Parser errors may include the original YAML, including passwords.
+  console.error(`[entrypoint] ${error instanceof yaml.YAMLException ? 'Invalid YAML in judge configuration' : error.message}`);
+  process.exitCode = 1;
+}

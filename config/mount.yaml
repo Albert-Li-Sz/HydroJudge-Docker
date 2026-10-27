@@ -1,0 +1,57 @@
+# These sources belong to the judge container, not the Docker host.
+mount:
+  - type: bind
+    source: /opt/judge-rootfs/bin
+    target: /bin
+    readonly: true
+  - type: bind
+    source: /opt/judge-rootfs/bin
+    target: /usr/bin
+    readonly: true
+  - type: bind
+    source: /opt/judge-rootfs/lib
+    target: /lib
+    readonly: true
+  - type: bind
+    source: /opt/judge-rootfs/include
+    target: /include
+    readonly: true
+  - type: bind
+    source: /opt/judge-rootfs/share
+    target: /share
+    readonly: true
+  - type: bind
+    source: /opt/judge-rootfs/etc
+    target: /etc
+    readonly: true
+  - type: bind
+    source: /nix/store
+    target: /nix/store
+    readonly: true
+  - type: bind
+    source: /dev/null
+    target: /dev/null
+  - type: bind
+    source: /dev/urandom
+    target: /dev/urandom
+  - type: bind
+    source: /dev/random
+    target: /dev/random
+  - type: bind
+    source: /dev/zero
+    target: /dev/zero
+  - type: bind
+    source: /dev/full
+    target: /dev/full
+  - type: tmpfs
+    target: /w
+    data: size=512m,nr_inodes=8k
+  - type: tmpfs
+    target: /tmp
+    data: size=512m,nr_inodes=8k
+proc: true
+workDir: /w
+hostName: hydrojudge
+domainName: hydrojudge
+uid: 1536
+gid: 1536

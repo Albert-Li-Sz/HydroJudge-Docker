@@ -1,0 +1,29 @@
+# Copy to config/judge.yaml and replace the site address and credentials.
+# The account must have PRIV_JUDGE permission on the Hydro site.
+hosts:
+  main:
+    type: hydro
+    server_url: https://oj.example.com/
+    uname: judge
+    password: REPLACE_AT_RUNTIME
+    detail: full
+    concurrency: 2
+    # Only accept languages actually installed in this image.
+    # Confirm the keys against your site's language configuration.
+    lang: [c, cc, cc.cc14, cc.cc17, cc.cc20, py.py3]
+
+parallelism: 2
+singleTaskParallelism: 2
+memoryMax: 1024m
+stdio_size: 64m
+processLimit: 128
+testcases_max: 120
+total_time_limit: 600
+rerun: 0
+rate: 1
+cache_dir: /var/cache/hydrojudge
+tmp_dir: /tmp/hydrojudge
+env: |
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  HOME=/w
+  LANG=C.UTF-8
