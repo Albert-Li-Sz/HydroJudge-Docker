@@ -16,11 +16,16 @@ async function main() {
   const dir = fs.mkdtempSync('/tmp/hydrojudge-policy-');
   const input = path.join(dir, 'judge.yaml');
   const base = { hosts: { main: { server_url: 'https://hydro-validation.invalid/', uname: 'judge', password: 'temporary-local-validation' } } };
-  function prepare(extra = {}) {
-    fs.writeFileSync(input, JSON.stringify({ ...base, ...extra }), { mode: 0o600 });
+  function prepare(extra = {}, valid = true) {
+    fs.writeFileSync(input, yaml.dump({ ...base, ...extra }), { mode: 0o600 });
     const child = spawnSync(process.execPath, ['/opt/hydrojudge/runtime/prepare-config.cjs'], {
       env: { ...process.env, CONFIG_FILE: input }, encoding: 'utf8',
     });
+    if (!valid) {
+      assert.notEqual(child.status, 0, `Invalid rate ${String(extra.rate)} was accepted`);
+      assert.match(child.stderr, /rate must be a finite positive number/);
+      return;
+    }
     assert.equal(child.status, 0, child.stderr);
     return yaml.load(fs.readFileSync('/run/hydrojudge/judge.yaml', 'utf8'));
   }
@@ -29,6 +34,10 @@ async function main() {
   assert.equal(defaults.rerun, 2);
   assert.equal(fs.existsSync('/run/hydrojudge/output-limit'), false);
   console.log('PASS: official installer defaults: stdio_size=256m, rerun=2');
+  for (const rate of [0, -1, NaN, Infinity, '1']) prepare({ rate }, false);
+  assert.equal(prepare({ rate: 0.75 }).rate, 0.75);
+  prepare();
+  console.log('PASS: invalid rates rejected; positive fractional calibration retained');
 
   process.env.CONFIG_FILE = '/run/hydrojudge/judge.yaml';
   let pending;
@@ -53,6 +62,10 @@ async function main() {
       ['sandbox OLE', 'Output Limit Exceeded', 1000000, 1048576, [], 5],
       ['file OLE with copy-out failure', 'Output Limit Exceeded', 1000000, 268435456,
         [{ name: 'sum.out', type: 'CopyOutSizeExceeded' }], 5, 'sum'],
+      ['copy-out OLE without sandbox OLE', 'File Error', 1000000, 1048576,
+        [{ name: 'sum.out', type: 'CopyOutSizeExceeded' }], 5, 'sum'],
+      ['genuinely missing output remains RE', 'File Error', 1000000, 1048576,
+        [{ name: 'sum.out', type: 'CopyOutOpen' }], 6, 'sum'],
       ['OLE priority over TLE', 'Time Limit Exceeded', 1200000000, 1048576, [{ name: 'stdout', type: 'CollectSizeExceeded' }], 5],
       ['OLE priority over MLE', 'Memory Limit Exceeded', 1000000, 9437184, [{ name: 'stderr', type: 'CollectSizeExceeded' }], 5],
       ['MLE without overflow', 'Memory Limit Exceeded', 1000000, 9437184, [], 4],
@@ -74,6 +87,15 @@ async function main() {
     assert.equal(custom.stdio_size, '16m');
     assert.equal(custom.rerun, 0);
     console.log('PASS: explicit stdio_size/rerun overrides preserved');
+    const { overrideConfig } = requireJudge('@hydrooj/hydrojudge/src/config.ts');
+    overrideConfig(custom);
+    pending = { status: 'Accepted', time: 1000000, memory: 1048576, exitStatus: 0,
+      files: { stdout: '', stderr: '' }, fileIds: { 'sum.out': 'fixture-file' } };
+    await runQueued('/bin/true', { filename: 'sum', cacheStdoutAndStderr: true });
+    assert.ok(requests.at(-1).cmd[0].copyOutMax >= 256 * 1024 * 1024,
+      'Small standard-stream limits must not shrink regular-file copy-out');
+    assert.equal(requests.at(-1).cmd[0].files[1].max, 16 * 1024 * 1024);
+    console.log('PASS: 16 MiB streams preserve the 256 MiB regular-file copy-out limit');
   } finally {
     server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));

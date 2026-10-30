@@ -20,12 +20,18 @@ replaceOnce(
   '[SandboxStatus.OutputLimitExceeded, STATUS.STATUS_OUTPUT_LIMIT_EXCEEDED]',
   'output-limit mapping',
 );
+replaceOnce(
+  'copyOutMax: Math.floor(1024 * 1024 * stdioLimit * 3)',
+  'copyOutMax: Math.floor(1024 * 1024 * Math.max(256, stdioLimit * 3))',
+  'regular-file copy-out limit',
+);
 const marker = "    ret.stdout = ret.files[outname] || '';";
 replaceOnce(marker, `    // Preserve an explicit sandbox OLE even when copying the output file failed.
     // Give recorded standard-stream overflow OLE priority over later TLE/MLE.
     if (result.status === SandboxStatus.OutputLimitExceeded
-        || result.fileError?.some((error) => ['stdout', 'stderr'].includes(error.name)
-        && error.type === 'CollectSizeExceeded')) {
+        || result.fileError?.some((error) => (['stdout', 'stderr'].includes(error.name)
+        && error.type === 'CollectSizeExceeded')
+        || (error.name === outname && error.type === 'CopyOutSizeExceeded'))) {
         ret.status = STATUS.STATUS_OUTPUT_LIMIT_EXCEEDED;
     }
 ${marker}`, 'collector status handling');

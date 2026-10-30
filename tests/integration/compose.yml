@@ -25,7 +25,7 @@ services:
       timeout: 5s
       retries: 40
   judge:
-    image: hydrojudge:validation
+    image: ${HYDRO_VALIDATION_JUDGE_IMAGE:-hydrojudge:validation}
     platform: linux/amd64
     privileged: true
     shm_size: 1gb

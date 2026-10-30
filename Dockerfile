@@ -35,7 +35,8 @@ COPY package.json package-lock.json ./
 COPY patches/ ./patches/
 RUN test "${TARGETARCH}" = amd64 || { echo 'Only linux/amd64 is supported' >&2; exit 1; }
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund \
-    && node patches/hydrojudge-output-limit.cjs
+    && node patches/hydrojudge-output-limit.cjs \
+    && node patches/hydrojudge-reliability.cjs
 
 FROM ${NODE_IMAGE} AS runtime
 LABEL org.opencontainers.image.title="Hydro independent judge" \

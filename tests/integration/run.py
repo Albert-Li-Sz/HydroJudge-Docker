@@ -59,6 +59,12 @@ if(x*x==n)quitf(_ok,"valid root");quitf(_wa,"invalid root");}
 int main(int argc,char**argv){registerInteraction(argc,argv);int n=inf.readInt();std::cout<<n<<std::endl;
 int x=ouf.readInt();if(x==n*2)quitf(_ok,"correct response");quitf(_wa,"wrong response");}
 '''
+    size_checker = '''#include "testlib.h"
+#include <cstdio>
+int main(int argc,char**argv){registerTestlibCmd(argc,argv);FILE*f=fopen(argv[2],"rb");
+if(!f)quitf(_fail,"missing candidate output");fseek(f,0,SEEK_END);long size=ftell(f);fclose(f);
+if(size==64L*1024*1024)quitf(_ok,"64 MiB copied intact");quitf(_wa,"incorrect output size");}
+'''
     manager = '''#include <stdio.h>
 int main(int argc,char**argv){int n,ok=1;if(scanf("%d",&n)!=1||argc<5)return 1;
 for(int i=0;i<2;i++){FILE*in=fopen(argv[2*i+1],"r"),*out=fopen(argv[2*i+2],"w");
@@ -75,6 +81,9 @@ puts(ok?"1":"0");return 0;}
         fixture('stack', {'time': '10s', 'memory': '256m'}, [('4096\n', '4096\n')]),
         fixture('fileio', {'filename': 'sum'}, [('20 22\n', '42\n')]),
         fixture('largefile', {'filename': 'sum', 'time': '15s', 'memory': '64m'}, [('0\n', ('A' * 4095 + '\n') * 5120)]),
+        fixture('filecopyboundary', {'filename': 'sum', 'time': '15s', 'memory': '256m',
+                                    'checker_type': 'testlib', 'checker': 'checker.cc'},
+                [('0\n', '0\n')], {'checker.cc': size_checker}),
         fixture('filelimit', {'filename': 'sum', 'time': '15s', 'memory': '512m'}, [('0\n', '0\n')]),
         fixture('special', {'checker_type': 'testlib', 'checker': 'checker.cc'}, [('9\n', '3\n')], {'checker.cc': checker}),
         fixture('interactive', {'type': 'interactive', 'interactor': 'interactor.cc', 'time': '5s'}, [('21\n', '42\n')], {'interactor.cc': interactor}),
@@ -229,6 +238,7 @@ Scanner s=new Scanner(new File("sum.in"));try(PrintWriter w=new PrintWriter("sum
         ('Continuous output limit', 'outputlimit', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};for(;;)fwrite(b,1,sizeof b,stdout);}', 'OLE', 0),
         ('File output limit', 'filelimit', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};freopen("sum.out","w",stdout);for(;;)fwrite(b,1,sizeof b,stdout);}', 'OLE', 0),
         ('File output above stream limit', 'largefile', 'c', '#include <stdio.h>\nint main(void){char b[4096];for(int i=0;i<4096;i++)b[i]=65;b[4095]=10;freopen("sum.out","w",stdout);for(int i=0;i<5120;i++)fwrite(b,1,sizeof b,stdout);return 0;}', 'AC', 100),
+        ('64 MiB file with 16 MiB streams', 'filecopyboundary', 'c', '#include <stdio.h>\nint main(void){char b[4096]={0};FILE*f=fopen("sum.out","wb");for(int i=0;i<16384;i++)if(fwrite(b,1,sizeof b,f)!=sizeof b)return 1;return fclose(f);}', 'AC', 100),
         ('Memory limit', 'resource', 'c', '#include <stdlib.h>\nint main(void){volatile char*p=(char*)malloc(256UL*1024*1024);if(!p)return 42;for(unsigned long i=0;i<256UL*1024*1024;i+=4096)p[i]=1;return 0;}', 'MLE', 0),
         ('C++ address-space limit', 'resource', 'cc.cc17', '#include <cstdlib>\n#include <cstdio>\nint main(){void*p=malloc(256UL*1024*1024);puts(p?"allocated":"0");}', 'AC', 100),
         ('C++ null access after allocation failure', 'resource', 'cc.cc17', '#include <cstdlib>\nint main(){volatile char*p=(char*)malloc(256UL*1024*1024);for(unsigned long i=0;i<256UL*1024*1024;i+=4096)p[i]=1;}', 'RE', 0),

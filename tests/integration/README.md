@@ -6,6 +6,8 @@
 
 已构建 `hydrojudge:validation` 后，可以在干净的原生 amd64 测试工作区运行 `bash scripts/validate-image.sh`，自动执行下面的全部流程并清理测试容器和网络。GitHub Actions 发布镜像前也运行该脚本。
 
+0.1.1 的自动流程还会拉取公开的 0.1.0 镜像，用真实 C、特殊判题和交互任务生成旧缓存，再保留同一个卷切换到待发布镜像，核对题目数据 SHA256 和编译缓存迁移。客户端协议故障检查在单独容器内模拟服务，只有测试预加载器将 30 秒重试缩短为 100 毫秒；生产镜像不启用该预加载器。
+
 ```bash
 JUDGE_IMAGE=hydrojudge:validation ./scripts/build.sh
 docker run --rm --platform linux/amd64 -v "$PWD/tests/integration:/tests:ro" hydrojudge:validation node /tests/client-output-policy.cjs
@@ -32,6 +34,7 @@ docker compose -p hydrojudge-validation -f tests/integration/compose.yml exec -T
 docker compose -p hydrojudge-validation -f tests/integration/compose.yml exec -T judge node - < tests/integration/sandbox-output.cjs
 docker compose -p hydrojudge-validation -f tests/integration/compose.yml exec -T judge node - < tests/integration/sandbox-fileio-memory.cjs
 docker compose -p hydrojudge-validation -f tests/integration/compose.yml exec -T judge node - < tests/integration/sandbox-process-limit.cjs
+docker compose -p hydrojudge-validation -f tests/integration/compose.yml exec -T judge node - < tests/integration/sandbox-cache.cjs
 python3 tests/integration/default-limits.py
 ```
 
@@ -49,6 +52,8 @@ python3 tests/integration/pretest.py
 主站结果记录在 `.local-test/qa/results.json`。其中包含本次测试程序的评测细节，不包含账号密码。首次运行前可用 `python3 tests/integration/run.py run --only 'C AC' --fail-fast` 快速检查连接。
 
 客户端策略测试使用真实安装的 HydroJudge 模块与模拟沙箱响应，验证缺省 `stdio_size: 256m`、`rerun: 2`、官方文件采集请求，以及 OLE 映射和优先策略。完整端到端套件显式使用 `stdio_size: 16m` 缩小资源用例，`rerun: 2`；沙箱的单文件限额仍为官方缺省 256 MiB。低内存下有限的 12 MiB 标准输出严格要求 MLE；无限高速输出可能同时触及输出限制，允许按现有优先策略返回 OLE，同时仍要求内存计量达到 8 MiB。20 MiB 文件输出应通过，用于验证标准流限额没有降低单文件限额。
+
+新增的 64 MiB 文件输出必须得到 AC，覆盖原先 48 MiB 隐式复制上限以上的范围。缓存探针通过真实 GCC 和沙箱执行旧、新编译参数生成的程序，既检查不变配置继续命中，也检查变更后确实重编译。
 
 Java 21 用例验证版本、Java 21 API、虚拟线程、AC/WA/CE/RE/TLE、文件 IO 和交互题；PyPy 3 用例验证解释器类型、JIT、AC/WA/CE/RE/TLE、文件 IO 和交互题。并发用例混合提交 Java、PyPy、CPython 任务；语言过滤测试使用未安装的 Go，确认任务不会被本评测机领取。
 

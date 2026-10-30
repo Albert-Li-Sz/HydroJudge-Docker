@@ -21,7 +21,7 @@ processLimit: 128
 testcases_max: 120
 total_time_limit: 600
 rerun: 2
-rate: 1
+rate: 1 # Positive timing calibration multiplier; fractional values are allowed.
 cache_dir: /var/cache/hydrojudge
 tmp_dir: /tmp/hydrojudge
 env: |

@@ -1,6 +1,6 @@
 {
   "name": "hydrojudge-docker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Runtime dependencies for a linux/amd64 Hydro judge image",
   "engines": {

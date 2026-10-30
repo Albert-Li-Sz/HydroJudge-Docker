@@ -53,6 +53,15 @@ PY
 docker run --rm --platform linux/amd64 \
   -v "$project_dir/tests/integration:/tests:ro" \
   hydrojudge:validation node /tests/client-output-policy.cjs | tee .local-test/qa/client-policy.log
+for scenario in multi-site handshake expired-session handshake-auth; do
+  docker run --rm --platform linux/amd64 \
+    -v "$project_dir/tests/integration:/tests:ro" \
+    hydrojudge:validation node /tests/client-reliability.cjs "$scenario" \
+    | tee ".local-test/qa/client-$scenario.log"
+done
+docker run --rm --platform linux/amd64 \
+  -v "$project_dir/tests/integration:/tests:ro" \
+  hydrojudge:validation node /tests/client-session.cjs | tee .local-test/qa/client-session.log
 python3 -B tests/integration/run.py prepare --profile defaults
 "${compose[@]}" up -d --build --wait --wait-timeout 180 mongo site
 python3 -B tests/integration/configure-site.py
@@ -60,9 +69,27 @@ docker run --rm --platform linux/amd64 --network "$network" \
   -v "$project_dir/.local-test/qa:/qa:ro" \
   -v "$project_dir/tests/integration:/tests:ro" \
   hydrojudge:validation node /tests/site-language-config.cjs | tee .local-test/qa/site-languages.json
-"${compose[@]}" up -d --no-build --no-recreate --wait --wait-timeout 180 judge
+legacy_image=ghcr.io/albert-li-sz/hydrojudge-docker:0.1.0
+docker pull --platform linux/amd64 "$legacy_image"
+HYDRO_VALIDATION_JUDGE_IMAGE="$legacy_image" "${compose[@]}" up -d --no-build --wait --wait-timeout 180 judge
+python3 -B tests/integration/run.py run --only 'C AC' --only 'Special checker accepts alternative' --only 'Interactive AC'
+cp .local-test/qa/results.json .local-test/qa/results-upgrade-before.json
+"${compose[@]}" exec -T judge node - before < tests/integration/cache-upgrade.cjs | tee .local-test/qa/cache-upgrade-before.json
+"${compose[@]}" up -d --no-build --wait --wait-timeout 180 judge
+python3 -B tests/integration/run.py run --only 'C AC' --only 'Special checker accepts alternative' --only 'Interactive AC'
+cp .local-test/qa/results.json .local-test/qa/results-upgrade-after.json
+"${compose[@]}" exec -T judge node - after < tests/integration/cache-upgrade.cjs | tee .local-test/qa/cache-upgrade-after.json
+python3 -B - <<'PY'
+import json
+from pathlib import Path
+qa = Path('.local-test/qa')
+before = json.loads((qa / 'cache-upgrade-before.json').read_text())
+after = json.loads((qa / 'cache-upgrade-after.json').read_text())
+assert before['dataSha256'] == after['dataSha256'], 'Upgrade modified or lost cached testdata'
+print('PASS: upgrade from 0.1.0 preserves testdata and migrates compiled checker/interactor caches')
+PY
 
-for probe in sandbox-probe sandbox-languages sandbox-output sandbox-fileio-memory sandbox-process-limit; do
+for probe in sandbox-probe sandbox-languages sandbox-output sandbox-fileio-memory sandbox-process-limit sandbox-cache; do
   "${compose[@]}" exec -T judge node - < "tests/integration/$probe.cjs" | tee ".local-test/qa/$probe.log"
 done
 python3 -B tests/integration/default-limits.py

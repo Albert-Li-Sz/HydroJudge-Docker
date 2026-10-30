@@ -2,7 +2,7 @@
 
 为已有的 Hydro OJ 提供 Docker 独立评测机，支持 C、C++、Java 21、CPython 3 和 PyPy 3，仅支持 `linux/amd64`。
 
-发布镜像：`ghcr.io/albert-li-sz/hydrojudge-docker:0.1.0`。
+发布镜像：`ghcr.io/albert-li-sz/hydrojudge-docker:0.1.1`。
 
 ## 快速部署
 
@@ -37,3 +37,5 @@ docker compose logs -f judge
 ```
 
 启动后，在主站确认评测机在线，并提交一道简单题验证评测结果。
+
+已有部署将 `.env` 中的 `JUDGE_IMAGE` 更新为上述版本，再执行拉取和启动命令。升级保留题目缓存卷，旧编译缓存会自动重建。版本变更见 [CHANGELOG](CHANGELOG.md)。

@@ -98,13 +98,15 @@ jobs:
           path: |
             .local-test/qa/results.json
             .local-test/qa/results-default-limits.json
+            .local-test/qa/results-upgrade-*.json
+            .local-test/qa/cache-upgrade-*.json
             .local-test/qa/concurrency.json
             .local-test/qa/language-filter.json
             .local-test/qa/pretest.json
             .local-test/qa/environment.json
             .local-test/qa/site-languages.json
             .local-test/qa/diagnostics.log
-            .local-test/qa/client-policy.log
+            .local-test/qa/client-*.log
             .local-test/qa/sandbox-*.log
             .local-test/publication.json
             .local-test/published-manifest.json
