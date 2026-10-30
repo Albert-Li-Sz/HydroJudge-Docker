@@ -59,11 +59,11 @@ if(x*x==n)quitf(_ok,"valid root");quitf(_wa,"invalid root");}
 int main(int argc,char**argv){registerInteraction(argc,argv);int n=inf.readInt();std::cout<<n<<std::endl;
 int x=ouf.readInt();if(x==n*2)quitf(_ok,"correct response");quitf(_wa,"wrong response");}
 '''
-    size_checker = '''#include "testlib.h"
-#include <cstdio>
-int main(int argc,char**argv){registerTestlibCmd(argc,argv);FILE*f=fopen(argv[2],"rb");
-if(!f)quitf(_fail,"missing candidate output");fseek(f,0,SEEK_END);long size=ftell(f);fclose(f);
-if(size==64L*1024*1024)quitf(_ok,"64 MiB copied intact");quitf(_wa,"incorrect output size");}
+    size_checker = '''#include <stdio.h>
+int main(int argc,char**argv){if(argc<3)return 2;FILE*f=fopen(argv[2],"rb");
+if(!f)return 2;if(fseek(f,0,SEEK_END))return 2;long size=ftell(f);fclose(f);
+puts(size==64L*1024*1024?"64 MiB copied intact":"incorrect output size");
+return size==64L*1024*1024?0:1;}
 '''
     manager = '''#include <stdio.h>
 int main(int argc,char**argv){int n,ok=1;if(scanf("%d",&n)!=1||argc<5)return 1;
@@ -82,8 +82,8 @@ puts(ok?"1":"0");return 0;}
         fixture('fileio', {'filename': 'sum'}, [('20 22\n', '42\n')]),
         fixture('largefile', {'filename': 'sum', 'time': '15s', 'memory': '64m'}, [('0\n', ('A' * 4095 + '\n') * 5120)]),
         fixture('filecopyboundary', {'filename': 'sum', 'time': '15s', 'memory': '256m',
-                                    'checker_type': 'testlib', 'checker': 'checker.cc'},
-                [('0\n', '0\n')], {'checker.cc': size_checker}),
+                                    'checker_type': 'qduoj', 'checker': 'checker.c'},
+                [('0\n', '0\n')], {'checker.c': size_checker}),
         fixture('filelimit', {'filename': 'sum', 'time': '15s', 'memory': '512m'}, [('0\n', '0\n')]),
         fixture('special', {'checker_type': 'testlib', 'checker': 'checker.cc'}, [('9\n', '3\n')], {'checker.cc': checker}),
         fixture('interactive', {'type': 'interactive', 'interactor': 'interactor.cc', 'time': '5s'}, [('21\n', '42\n')], {'interactor.cc': interactor}),
